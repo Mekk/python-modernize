@@ -2,6 +2,9 @@ from lib2to3.fixer_util import FromImport, Newline, find_root
 from lib2to3.pytree import Leaf, Node
 from lib2to3.pygram import python_symbols as syms, python_grammar
 from lib2to3.pgen2 import token
+import logging
+
+log = logging.getLogger("modernize")
 
 def check_future_import(node):
     """If this is a future import, return set of symbols that are imported,
@@ -49,10 +52,16 @@ def add_future(node, symbol):
         names = check_future_import(node)
         if not names:
             # not a future statement; need to insert before this
+            log.debug("No names found while looking for future {0}".format(
+                symbol))
             break
         if symbol in names:
             # already imported
             return
+        else:
+            log.debug("Future {0} not yet found in symbols {1}. Adding".format(
+                symbol, names))
+
 
     import_ = FromImport('__future__', [Leaf(token.NAME, symbol, prefix=" ")])
     children = [import_, Newline()]
