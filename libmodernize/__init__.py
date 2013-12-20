@@ -15,6 +15,7 @@ def check_future_import(node):
     node = node.children[0]
     # now node is the import_from node
     if not (node.type == syms.import_from and
+            hasattr(node.children[1], 'value') and
             node.children[1].value == u'__future__'):
         return set()
     node = node.children[3]
