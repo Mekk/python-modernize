@@ -22,6 +22,18 @@ def sub(x):
     print x, u"here"
 """
 
+PROBLEMATIC_CONTENT = '''
+
+"""
+Hello
+"""
+
+from a.b.c import d
+
+def test_existing():
+    print d
+'''
+
 def _check_for_multiple_futures(file_name, source_content):
     """
     Checks for multiple identical futures in given file,
@@ -78,15 +90,5 @@ def test_two_files_on_single_run():
         shutil.rmtree(tmpdirname)
 
 def test_problematic_file():
-    # ON this one I got 
-    #   File "/home/marcink/DEV_git/python/python-modernize/libmodernize/fixes/fix_print.py", line 73, in transform
-    #     add_future(node, u'print_function')
-    #   File "/home/marcink/DEV_git/python/python-modernize/libmodernize/__init__.py", line 51, in add_future
-    #     names = check_future_import(node)
-    #   File "/home/marcink/DEV_git/python/python-modernize/libmodernize/__init__.py", line 18, in check_future_import
-    #     node.children[1].value == u'__future__'):
-    # AttributeError: 'Node' object has no attribute 'value'
-
-    with open("tests/problematic_file.py", "rt") as prb:
-        prb_content = prb.read()
-    _check_on_input(prb_content)
+    # ON this one I get crash
+    _check_on_input(PROBLEMATIC_CONTENT)
