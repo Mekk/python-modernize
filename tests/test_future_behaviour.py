@@ -76,3 +76,17 @@ def test_two_files_on_single_run():
                 raise Exception("File {0} got no from __future__ (but it should)")
     finally:
         shutil.rmtree(tmpdirname)
+
+def test_problematic_file():
+    # ON this one I got 
+    #   File "/home/marcink/DEV_git/python/python-modernize/libmodernize/fixes/fix_print.py", line 73, in transform
+    #     add_future(node, u'print_function')
+    #   File "/home/marcink/DEV_git/python/python-modernize/libmodernize/__init__.py", line 51, in add_future
+    #     names = check_future_import(node)
+    #   File "/home/marcink/DEV_git/python/python-modernize/libmodernize/__init__.py", line 18, in check_future_import
+    #     node.children[1].value == u'__future__'):
+    # AttributeError: 'Node' object has no attribute 'value'
+
+    with open("tests/problematic_file.py", "rt") as prb:
+        prb_content = prb.read()
+    _check_on_input(prb_content)
